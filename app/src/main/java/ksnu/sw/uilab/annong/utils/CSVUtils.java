@@ -12,7 +12,7 @@ import java.util.List;
 import ksnu.sw.uilab.annong.utils.enums.AppResourceName;
 
 public class CSVUtils {
-    private static final String COMMA = ",";
+    private static final String CSV_SPLIT_COMMA = ",";
 
     public static List<List<String>> getFullDataFromDir(Context context, AppResourceName appResourceName){
         BufferedReader csvBr = FileUtils.openInternalFileReader(context, appResourceName);
@@ -22,7 +22,7 @@ public class CSVUtils {
     public static void writeCsvData(Context context, AppResourceName appResourceName, String data){
         BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName);
         try{
-            csvWr.write(data+COMMA);
+            csvWr.write(data+ CSV_SPLIT_COMMA);
             csvWr.close();
         }catch (IOException e){
             e.printStackTrace();
@@ -46,7 +46,7 @@ public class CSVUtils {
 
     private static List<String> readCsvLine(String csvLine){
         List<String> line = new ArrayList<>();
-        String[] dataSplitByComma = csvLine.split(COMMA);
+        String[] dataSplitByComma = csvLine.split(CSV_SPLIT_COMMA);
 
         Collections.addAll(line, dataSplitByComma);
 
