@@ -11,6 +11,7 @@ import ksnu.sw.uilab.annong.utils.enums.ApplicationMessage;
 
 public class CropsList {
     private static CropsList instance = new CropsList();
+    private static final int NEW_CROP_SELECT_INDEX = 0;
     private List<String> cropsList;
     private Context context;
 
@@ -38,7 +39,7 @@ public class CropsList {
     }
 
     private void initFirstItem(){
-        cropsList.add(0, ApplicationMessage.MAKE_NEW_CROP_SELECT_MESSAGE.getMessage());
+        cropsList.add(NEW_CROP_SELECT_INDEX, ApplicationMessage.MAKE_NEW_CROP_SELECT_MESSAGE.getMessage());
     }
 
     /**
