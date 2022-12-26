@@ -5,9 +5,9 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-import ksnu.sw.uilab.annong.utils.CSVUtils;
+import ksnu.sw.uilab.annong.utils.CsvUtils;
 import ksnu.sw.uilab.annong.utils.enums.AppResourceName;
-import ksnu.sw.uilab.annong.utils.enums.ApplicationMessage;
+import ksnu.sw.uilab.annong.utils.enums.ApplicationConstants;
 
 public class CropsList {
     private static CropsList instance = new CropsList();
@@ -32,14 +32,14 @@ public class CropsList {
 
     private void initCropsList(){
         try{
-            this.cropsList = CSVUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_DIRECTORY).get(0);
+            this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME).get(0);
         }catch (IndexOutOfBoundsException e){
             this.cropsList = new ArrayList<>();
         }
     }
 
     private void initFirstItem(){
-        cropsList.add(NEW_CROP_SELECT_INDEX, ApplicationMessage.MAKE_NEW_CROP_SELECT_MESSAGE.getMessage());
+        cropsList.add(NEW_CROP_SELECT_INDEX, ApplicationConstants.MAKE_NEW_CROP_SELECT_MESSAGE.toString());
     }
 
     /**
@@ -55,12 +55,12 @@ public class CropsList {
      * @param cropsName 새로운 작물 이름
      */
     public void addNewCrops(String cropsName){
-        CSVUtils.writeCsvData(context, AppResourceName.CROPS_LIST_DIRECTORY, cropsName);
+        CsvUtils.writeCsvData(context, AppResourceName.CROPS_LIST_FILE_NAME, cropsName);
         updateCropsList();
     }
 
     private void updateCropsList(){
-        this.cropsList = CSVUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_DIRECTORY).get(0);
+        this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME).get(0);
         initFirstItem();
     }
 }

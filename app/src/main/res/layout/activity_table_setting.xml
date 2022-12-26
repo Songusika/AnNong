@@ -3,7 +3,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="20dp">
+        android:layout_margin="10dp">
 
     <TextView
             android:layout_width="match_parent"
@@ -25,8 +25,8 @@
                 android:gravity="center"
                 android:text="작물명: "
                 android:textSize="40dp"/>
-        <Spinner
-                android:id="@+id/spinner_crops_name"
+        <TextView
+                android:id="@+id/crops_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -38,7 +38,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/black"
-            android:paddingBottom="1dp">
+            android:paddingVertical="1dp">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:text=""
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:layout_marginHorizontal="0.5dp"/>
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -46,15 +55,17 @@
                 android:background="@color/white"
                 android:text="컬럼명"
                 android:textSize="20dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:layout_marginHorizontal="0.5dp"/>
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:background="@color/white"
                 android:text="데이터 형식"
                 android:textSize="20dp"
-                android:textAlignment="center"/>
+                android:textAlignment="center"
+                android:layout_marginHorizontal="0.5dp"/>
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -62,21 +73,15 @@
                 android:background="@color/white"
                 android:text="필수"
                 android:textSize="20dp"
-                android:textAlignment="center"/>
-        <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:text="삭제"
-                android:textSize="20dp"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:layout_marginHorizontal="0.5dp"/>
     </LinearLayout>
+
+
     <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
-
         <TableLayout
                 android:id="@+id/table_layout"
                 android:layout_width="match_parent"
@@ -86,9 +91,28 @@
                 android:background="@color/white"/>
     </ScrollView>
 
-    <Button
-            android:id="@+id/btn_add_row"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="+" />
+            android:orientation="horizontal">
+        <Button
+                android:id="@+id/btn_delete_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="컬럼 삭제" />
+        <Button
+                android:id="@+id/btn_add_row"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="컬럼 추가" />
+
+    </LinearLayout>
+
+    <Button
+            android:id="@+id/btn_save_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="테이블 저장" />
 </LinearLayout>

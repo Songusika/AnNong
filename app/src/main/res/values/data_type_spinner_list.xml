@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="data_type_spinner_list">
+        <item>숫자</item>
+        <item>텍스트</item>
+    </string-array>
+</resources>

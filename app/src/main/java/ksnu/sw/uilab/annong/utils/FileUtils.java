@@ -20,7 +20,7 @@ public class FileUtils {
      * @param appResourceName - Open 할 파일 경로
      * @return BufferedReader
      */
-    public static BufferedReader openInternalFileReader(Context context, AppResourceName appResourceName){
+    public static BufferedReader openInternalFileReader(Context context, String appResourceName){
         try {
             return getInternalFileBufferedReader(context, appResourceName);
         }catch (FileNotFoundException e){
@@ -31,8 +31,8 @@ public class FileUtils {
         }
     }
 
-    private static BufferedReader getInternalFileBufferedReader(Context context, AppResourceName appResourceName) throws FileNotFoundException{
-        FileInputStream fin = context.openFileInput(appResourceName.getResourceName());
+    private static BufferedReader getInternalFileBufferedReader(Context context, String appResourceName) throws FileNotFoundException{
+        FileInputStream fin = context.openFileInput(appResourceName);
         InputStreamReader in = new InputStreamReader(fin);
 
         BufferedReader br = new BufferedReader(in);
@@ -43,15 +43,15 @@ public class FileUtils {
      * 빈 CSV 파일 생성
      * @param appResourceName - 생성할 CSV 경로
      */
-    private static void generateNewFile(Context context, AppResourceName appResourceName){
+    private static void generateNewFile(Context context, String appResourceName){
         try{
-            FileOutputStream fos = context.openFileOutput(appResourceName.getResourceName(), context.MODE_APPEND);
+            FileOutputStream fos = context.openFileOutput(appResourceName, context.MODE_APPEND);
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
-    public static BufferedWriter openInternalFileWriter(Context context, AppResourceName appResourceName){
+    public static BufferedWriter openInternalFileWriter(Context context, String appResourceName){
         try{
             return getInternalFileBufferedWriter(context, appResourceName);
         }catch (FileNotFoundException e){
@@ -62,8 +62,8 @@ public class FileUtils {
         }
     }
 
-    private static BufferedWriter getInternalFileBufferedWriter(Context context, AppResourceName appResourceName) throws FileNotFoundException{
-        FileOutputStream fos = context.openFileOutput(appResourceName.getResourceName(), context.MODE_APPEND);
+    private static BufferedWriter getInternalFileBufferedWriter(Context context, String appResourceName) throws FileNotFoundException{
+        FileOutputStream fos = context.openFileOutput(appResourceName, context.MODE_APPEND);
         OutputStreamWriter os = new OutputStreamWriter(fos);
         BufferedWriter br = new BufferedWriter(os);
 

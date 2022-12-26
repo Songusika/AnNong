@@ -2,7 +2,7 @@ package ksnu.sw.uilab.annong.utils.enums;
 
 public enum AppResourceName {
 
-    CROPS_LIST_DIRECTORY("cropsList.csv");
+    CROPS_LIST_FILE_NAME("cropsList.csv");
 
     private final String resourceName;
 
@@ -11,7 +11,7 @@ public enum AppResourceName {
         this.resourceName = resourceName;
     }
 
-    public String getResourceName(){
+    public String getValue(){
         return this.resourceName;
     }
 

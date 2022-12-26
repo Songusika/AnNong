@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="@color/black"
+    android:id="@+id/talbe_setting_add_row">
+
+    <CheckBox
+        android:id="@+id/checkbox1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="20dp"
+        android:background="@color/white"
+        android:layout_marginVertical="1dp"
+        android:layout_marginHorizontal="0.5dp"/>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        android:hint="컬럼명"
+        android:singleLine="true"
+        android:background="@color/white"
+        android:layout_marginVertical="1dp"
+        android:layout_marginHorizontal="0.5dp"/>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:textAlignment="center"
+        android:entries="@array/data_type_spinner_list"
+        android:background="@color/white"
+        android:layout_marginVertical="1dp"
+        android:layout_marginHorizontal="0.5dp"/>
+
+    <CheckBox
+        android:id="@+id/checkbox2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/white"
+        android:layout_marginVertical="1dp"
+        android:layout_marginHorizontal="0.5dp"/>
+
+</TableRow>

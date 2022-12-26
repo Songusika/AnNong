@@ -11,18 +11,20 @@ import java.util.List;
 
 import ksnu.sw.uilab.annong.utils.enums.AppResourceName;
 
-public class CSVUtils {
+public class CsvUtils {
     private static final String CSV_SPLIT_COMMA = ",";
 
     public static List<List<String>> getFullDataFromDir(Context context, AppResourceName appResourceName){
-        BufferedReader csvBr = FileUtils.openInternalFileReader(context, appResourceName);
+        BufferedReader csvBr = FileUtils.openInternalFileReader(context, appResourceName.getValue());
 
         return readAllCsvLine(csvBr);
     }
+
     public static void writeCsvData(Context context, AppResourceName appResourceName, String data){
-        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName);
+        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName.getValue());
         try{
             csvWr.write(data+ CSV_SPLIT_COMMA);
+            csvWr.flush();
             csvWr.close();
         }catch (IOException e){
             e.printStackTrace();
