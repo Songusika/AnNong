@@ -76,6 +76,10 @@ public class ActivityTableSetting extends AppCompatActivity {
         }
     }
 
+    /**
+     * @param cropName 불러올 Json 파일 (작물 이름)
+     * @return CropMeta Json 파일로부터 객체 인스턴스화된 작물 메타데이터 객체
+     */
     private CropMeta getCropMetaData(String cropName){
         return JsonUtils.getInstanceFromJson(this, cropName, CropMeta.class);
     }

@@ -80,7 +80,9 @@ public class TableSettingActivity extends AppCompatActivity {
             String selectedItem = (String)selectCropsDropDown.getSelectedItem();
             if(selectedItem.equals(ApplicationConstants.MAKE_NEW_CROP_SELECT_MESSAGE.toString())){
                 selectedItem = getCropItemEditText.getText().toString();
+                //cropList.csv 에 새로운 작물 이름 추가
                 addNewCropItem(selectedItem);
+                // 새로운 작물에 대해서 json 파일 생성
                 initNewCropMeta(selectedItem);
             }
             startTableSettingActivity(selectedItem);
