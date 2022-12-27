@@ -20,7 +20,7 @@ public class CropMeta {
         return this.rows;
     }
 
-    public void addRow(CropRowMeta rowMeta){
-        this.rows.add(rowMeta);
+    public void setRows(List<CropRowMeta> row){
+        this.rows = row;
     }
 }

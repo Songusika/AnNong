@@ -28,12 +28,10 @@ import ksnu.sw.uilab.annong.utils.enums.Extras;
 
 public class ActivityTableSetting extends AppCompatActivity {
 
+    CropMeta cropMetaData;
     TextView cropsName;
     TableLayout tableLayout;
-    Button btnAddRow, btnDeleteRow;
-
-
-    int count = 0;
+    Button btnAddRow, btnDeleteRow, btnSaveTable;
 
     @RequiresApi(api = VERSION_CODES.N)
     @Override
@@ -51,16 +49,18 @@ public class ActivityTableSetting extends AppCompatActivity {
         tableLayout = findViewById(R.id.table_layout);
         btnAddRow = findViewById(R.id.btn_add_row);
         btnDeleteRow = findViewById(R.id.btn_delete_row);
+        btnSaveTable = findViewById(R.id.btn_save_table);
     }
 
     private void initEvent(){
         initBtnAddEvent();
         initBtnDeleteEvent();
+        initBtnSaveTable();
     }
 
     @RequiresApi(api = VERSION_CODES.N)
     private void initCropMetaData(String cropName){
-        CropMeta cropMetaData = getCropMetaData(cropName);
+        cropMetaData = getCropMetaData(cropName);
         cropsName.setText(cropMetaData.getCropName());
         initCropRowMetaData(cropMetaData.getRows());
     }
@@ -92,18 +92,17 @@ public class ActivityTableSetting extends AppCompatActivity {
         btnDeleteRow.setOnClickListener(view -> deleteTableRow());
     }
 
+    private void initBtnSaveTable(){btnSaveTable.setOnClickListener(view -> saveTable());}
+
     /* 테이블 행 추가2 */
-    void addTableRow() {
+    private void addTableRow() {
         TableRow tableRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.table_setting_add_row, null);
         Log.d("", ""+tableRow.getVirtualChildCount());
-        EditText edit = (EditText)tableRow.getVirtualChildAt(1);
-
-        edit.setText(""+count++);
         tableLayout.addView(tableRow);
     }
 
     /* 테이블 행 삭제 */
-    void deleteTableRow() {
+    private void deleteTableRow() {
         ArrayList<Integer> delete_list = new ArrayList<>();
 
         for(int i = 0; i< tableLayout.getChildCount(); i++) {
@@ -122,5 +121,41 @@ public class ActivityTableSetting extends AppCompatActivity {
             count++;
         }
         delete_list.clear();
+    }
+
+    private void saveTable(){
+        List<CropRowMeta> cropRowMeta = new ArrayList<>();
+        CropMeta cropMeta = new CropMeta(getCropName());
+
+        for(int index =0; index<tableLayout.getChildCount(); index++){
+            TableRow currentRow = (TableRow) tableLayout.getChildAt(index);
+            cropRowMeta.add(makeNewCropRowMeta(currentRow));
+        }
+        cropMeta.setRows(cropRowMeta);
+        JsonUtils.writeJsonData(this, getCropName(), cropMeta);
+    }
+
+    private CropRowMeta makeNewCropRowMeta(TableRow row){
+        String columnName = getColumnName(row);
+        String dataType = getDataType(row);
+        boolean isRequired = getRequireOption(row);
+
+        return new CropRowMeta(columnName, dataType, isRequired);
+    }
+
+    private String getColumnName(TableRow row){
+        return ((EditText)(row.getChildAt(1))).getText().toString();
+    }
+
+    private String getDataType(TableRow row){
+        return ((Spinner)(row.getChildAt(2))).getSelectedItem().toString();
+    }
+
+    private boolean getRequireOption(TableRow row){
+        return ((CheckBox)(row.getChildAt(3))).isChecked();
+    }
+
+    private String getCropName(){
+        return this.cropsName.getText().toString();
     }
 }

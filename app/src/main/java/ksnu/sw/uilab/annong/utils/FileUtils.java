@@ -40,8 +40,8 @@ public class FileUtils {
     }
 
     /**
-     * 빈 CSV 파일 생성
-     * @param appResourceName - 생성할 CSV 경로
+     * 빈 파일 생성
+     * @param appResourceName - 생성할 파일 이름
      */
     private static void generateNewFile(Context context, String appResourceName){
         try{
@@ -51,19 +51,19 @@ public class FileUtils {
         }
     }
 
-    public static BufferedWriter openInternalFileWriter(Context context, String appResourceName){
+    public static BufferedWriter openInternalFileWriter(Context context, String appResourceName, int mode){
         try{
-            return getInternalFileBufferedWriter(context, appResourceName);
+            return getInternalFileBufferedWriter(context, appResourceName, mode);
         }catch (FileNotFoundException e){
             e.printStackTrace();
 
             generateNewFile(context, appResourceName);
-            return openInternalFileWriter(context, appResourceName);
+            return openInternalFileWriter(context, appResourceName, mode);
         }
     }
 
-    private static BufferedWriter getInternalFileBufferedWriter(Context context, String appResourceName) throws FileNotFoundException{
-        FileOutputStream fos = context.openFileOutput(appResourceName, context.MODE_APPEND);
+    private static BufferedWriter getInternalFileBufferedWriter(Context context, String appResourceName, int mode) throws FileNotFoundException{
+        FileOutputStream fos = context.openFileOutput(appResourceName, mode);
         OutputStreamWriter os = new OutputStreamWriter(fos);
         BufferedWriter br = new BufferedWriter(os);
 

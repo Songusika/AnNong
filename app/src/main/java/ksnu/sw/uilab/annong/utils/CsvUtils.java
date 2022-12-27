@@ -21,7 +21,7 @@ public class CsvUtils {
     }
 
     public static void writeCsvData(Context context, AppResourceName appResourceName, String data){
-        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName.getValue());
+        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName.getValue(), context.MODE_APPEND);
         try{
             csvWr.write(data+ CSV_SPLIT_COMMA);
             csvWr.flush();
