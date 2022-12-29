@@ -19,12 +19,10 @@ public class JsonUtils  {
         }catch (IOException e){
             e.printStackTrace();
         }
-
     }
 
     public static <T> T getInstanceFromJson(Context context, String fileName, Class<T> parsingClass){
         BufferedReader jsonBr = FileUtils.openInternalFileReader(context, fileName+jsonFIleExtension);
-
         try{
             return gson.fromJson(jsonBr.readLine(), parsingClass);
         }catch (IOException e) {

@@ -30,9 +30,9 @@ public class TableSettingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_table_setting_test);
+        setContentView(R.layout.activity_crop_meta_select);
 
-        cropItems = CropsList.getInstance().initItems(this);
+        cropItems = CropsList.getInstance().initTableSettingItems(this);
         initComponents();
         initAdapter();
         initEvent();

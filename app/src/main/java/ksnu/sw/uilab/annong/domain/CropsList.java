@@ -22,11 +22,18 @@ public class CropsList {
         return instance;
     }
 
-    public CropsList initItems(Context context){
+    public CropsList initTableSettingItems(Context context){
         this.context = context;
 
         initCropsList();
         initFirstItem();
+        return this;
+    }
+
+    public CropsList initItem(Context context){
+        this.context = context;
+
+        initCropsList();
         return this;
     }
 
