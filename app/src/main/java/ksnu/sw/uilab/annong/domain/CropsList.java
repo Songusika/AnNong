@@ -39,7 +39,7 @@ public class CropsList {
 
     private void initCropsList(){
         try{
-            this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME).get(0);
+            this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME.getValue()).get(0);
         }catch (IndexOutOfBoundsException e){
             this.cropsList = new ArrayList<>();
         }
@@ -62,12 +62,12 @@ public class CropsList {
      * @param cropsName 새로운 작물 이름
      */
     public void addNewCrops(String cropsName){
-        CsvUtils.writeCsvData(context, AppResourceName.CROPS_LIST_FILE_NAME, cropsName);
+        CsvUtils.writeCsvData(context, AppResourceName.CROPS_LIST_FILE_NAME.getValue(), cropsName);
         updateCropsList();
     }
 
     private void updateCropsList(){
-        this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME).get(0);
+        this.cropsList = CsvUtils.getFullDataFromDir(context, AppResourceName.CROPS_LIST_FILE_NAME.getValue()).get(0);
         initFirstItem();
     }
 }

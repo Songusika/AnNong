@@ -14,14 +14,14 @@ import ksnu.sw.uilab.annong.utils.enums.AppResourceName;
 public class CsvUtils {
     private static final String CSV_SPLIT_COMMA = ",";
 
-    public static List<List<String>> getFullDataFromDir(Context context, AppResourceName appResourceName){
-        BufferedReader csvBr = FileUtils.openInternalFileReader(context, appResourceName.getValue());
+    public static List<List<String>> getFullDataFromDir(Context context, String appResourceName){
+        BufferedReader csvBr = FileUtils.openInternalFileReader(context, appResourceName);
 
         return readAllCsvLine(csvBr);
     }
 
-    public static void writeCsvData(Context context, AppResourceName appResourceName, String data){
-        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName.getValue(), context.MODE_APPEND);
+    public static void writeCsvData(Context context, String appResourceName, String data){
+        BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, appResourceName, context.MODE_APPEND);
         try{
             csvWr.write(data+ CSV_SPLIT_COMMA);
             csvWr.flush();

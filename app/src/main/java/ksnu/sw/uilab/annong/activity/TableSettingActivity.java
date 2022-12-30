@@ -33,6 +33,7 @@ public class TableSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crop_meta_select);
 
         cropItems = CropsList.getInstance().initTableSettingItems(this);
+
         initComponents();
         initAdapter();
         initEvent();
