@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import ksnu.sw.uilab.annong.R;
+import ksnu.sw.uilab.annong.domain.CropMeta;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,21 +23,15 @@ public class MainActivity extends AppCompatActivity {
         btn_output_data = (Button) findViewById(R.id.btn_output_data);
         btn_app_setting = (Button) findViewById(R.id.btn_app_setting);
 
-//        btn_table_setting.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, Activity_TableSetting.class);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        btn_input_data.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, Activity_InputData.class);
-//                startActivity(intent);
-//            }
-//        });
+        btn_table_setting.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CropMetaSettingActivity.class);
+            startActivity(intent);
+        });
+
+        btn_input_data.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CropSelectActivity.class);
+            startActivity(intent);
+        });
 //
 //        btn_output_data.setOnClickListener(new View.OnClickListener() {
 //            @Override
