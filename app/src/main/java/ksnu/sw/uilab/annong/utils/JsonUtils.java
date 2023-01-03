@@ -5,10 +5,11 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import ksnu.sw.uilab.annong.utils.enums.AppResourceExtensions;
 
 public class JsonUtils  {
     private static final Gson gson = new Gson();
-    private static final String jsonFIleExtension = ".json";
+    private static final String jsonFIleExtension = AppResourceExtensions.JSON.getFileExtension();
 
     public static <T> void writeJsonData(Context context, String fileName, T instance){
         BufferedWriter jsonBw = FileUtils.openInternalFileWriter(context, fileName+jsonFIleExtension, context.MODE_PRIVATE);

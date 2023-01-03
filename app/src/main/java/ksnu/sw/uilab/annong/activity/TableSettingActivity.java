@@ -23,6 +23,7 @@ import java.util.List;
 import ksnu.sw.uilab.annong.R;
 import ksnu.sw.uilab.annong.domain.CropMeta;
 import ksnu.sw.uilab.annong.domain.CropRowMeta;
+import ksnu.sw.uilab.annong.utils.CsvUtils;
 import ksnu.sw.uilab.annong.utils.JsonUtils;
 import ksnu.sw.uilab.annong.utils.enums.Extras;
 
@@ -92,7 +93,12 @@ public class TableSettingActivity extends AppCompatActivity {
         btnDeleteRow.setOnClickListener(view -> deleteTableRow());
     }
 
-    private void initBtnSaveTable(){btnSaveTable.setOnClickListener(view -> saveTable());}
+    private void initBtnSaveTable(){
+        btnSaveTable.setOnClickListener(view -> {
+            saveTable();
+            makeTable();
+        });
+    }
 
     /* 테이블 행 추가2 */
     private void addTableRow() {
@@ -132,7 +138,15 @@ public class TableSettingActivity extends AppCompatActivity {
             cropRowMeta.add(makeNewCropRowMeta(currentRow));
         }
         cropMeta.setRows(cropRowMeta);
+        this.cropMetaData = cropMeta;
         JsonUtils.writeJsonData(this, getCropName(), cropMeta);
+    }
+
+    private void makeTable(){
+        for(CropRowMeta rowMeta: this.cropMetaData.getRows()){
+            CsvUtils.writeCsvData(this, this.cropMetaData.getCropName(), rowMeta.getColumnName());
+        }
+        CsvUtils.writeNewLine(this, this.cropMetaData.getCropName());
     }
 
     private CropRowMeta makeNewCropRowMeta(TableRow row){
