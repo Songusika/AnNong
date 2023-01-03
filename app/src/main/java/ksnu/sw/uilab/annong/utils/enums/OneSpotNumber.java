@@ -11,7 +11,7 @@ public enum OneSpotNumber {
     ONE("일",1),
     TWO("이", 2),
     THREE("삼", 3),
-    FOUR("시",4),
+    FOUR("사",4),
     FIVE("오", 5),
     SIX("육", 6),
     SEVEN("칠", 7),
