@@ -25,6 +25,7 @@ import ksnu.sw.uilab.annong.domain.CropMeta;
 import ksnu.sw.uilab.annong.domain.CropRowMeta;
 import ksnu.sw.uilab.annong.utils.CsvUtils;
 import ksnu.sw.uilab.annong.utils.JsonUtils;
+import ksnu.sw.uilab.annong.utils.enums.BasicCropColumn;
 import ksnu.sw.uilab.annong.utils.enums.Extras;
 
 public class TableSettingActivity extends AppCompatActivity {
@@ -96,7 +97,7 @@ public class TableSettingActivity extends AppCompatActivity {
     private void initBtnSaveTable(){
         btnSaveTable.setOnClickListener(view -> {
             saveTable();
-            makeTable();
+            makeTableHeader();
         });
     }
 
@@ -142,11 +143,17 @@ public class TableSettingActivity extends AppCompatActivity {
         JsonUtils.writeJsonData(this, getCropName(), cropMeta);
     }
 
-    private void makeTable(){
+    private void makeTableHeader(){
+        appendTableHeader(BasicCropColumn.MEASUREMENT_DATE.toString());
+
         for(CropRowMeta rowMeta: this.cropMetaData.getRows()){
-            CsvUtils.writeCsvData(this, this.cropMetaData.getCropName(), rowMeta.getColumnName());
+            appendTableHeader(rowMeta.getColumnName());
         }
         CsvUtils.writeNewLine(this, this.cropMetaData.getCropName());
+    }
+
+    private void appendTableHeader(String data){
+        CsvUtils.writeCsvData(this, this.cropMetaData.getCropName(), data);
     }
 
     private CropRowMeta makeNewCropRowMeta(TableRow row){
