@@ -12,7 +12,7 @@ public class DataTypeValidator {
         double value;
 
         try{
-            value = Double.parseDouble(data);
+            value = Double.parseDouble(removeBlank(data));
         }catch (NumberFormatException e){
             value = checkOneSpotNumber(data);
         }
@@ -26,5 +26,9 @@ public class DataTypeValidator {
         }catch (NoSuchElementException e){
             throw new NotCorrectDataTypeException("숫자가 아닙니다.");
         }
+    }
+
+    private static String removeBlank(String data){
+        return data.replace(" ", "");
     }
 }
