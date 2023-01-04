@@ -1,4 +1,4 @@
-package ksnu.sw.uilab.annong.utils.enums.validator.exception;
+package ksnu.sw.uilab.annong.utils.validator.exception;
 
 public class NotCorrectDataTypeException extends Exception{
     public NotCorrectDataTypeException(String errorMessage){

@@ -39,6 +39,7 @@
                 android:text="새로운 작물"
                 android:textSize="30dp" />
             <Button
+                android:id="@+id/btn_go"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="초기화"

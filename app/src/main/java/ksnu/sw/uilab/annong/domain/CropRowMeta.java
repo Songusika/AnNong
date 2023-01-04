@@ -24,6 +24,10 @@ public class CropRowMeta {
         return CustomDataType.getCustomDataTypeIndex(this.dataType);
     }
 
+    public String getDataType(){
+        return this.dataType;
+    }
+
     public boolean isRequired(){
         return this.isRequired;
     }

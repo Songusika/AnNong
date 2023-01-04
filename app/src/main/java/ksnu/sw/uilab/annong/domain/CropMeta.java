@@ -1,5 +1,7 @@
 package ksnu.sw.uilab.annong.domain;
 
+import android.os.Build.VERSION_CODES;
+import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,5 +24,14 @@ public class CropMeta {
 
     public void setRows(List<CropRowMeta> row){
         this.rows = row;
+    }
+
+    @RequiresApi(api = VERSION_CODES.N)
+    public String getDataTypeByColumn(String column){
+        return rows.stream()
+                .filter(row -> row.getColumnName().equals(column))
+                .findFirst()
+                .get()
+                .getDataType();
     }
 }
