@@ -55,7 +55,7 @@ public class CsvUtils {
         }
     }
 
-    private static void clearCSV(Context context, String fileName){
+    public static void clearCSV(Context context, String fileName){
         BufferedWriter csvWr = FileUtils.openInternalFileWriter(context, fileName+AppResourceExtensions.CSV.getFileExtension(), context.MODE_PRIVATE);
         try{
             writeAndCloseBufferedWriter(csvWr, "");
