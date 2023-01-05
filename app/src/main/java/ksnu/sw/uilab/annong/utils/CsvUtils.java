@@ -41,6 +41,19 @@ public class CsvUtils {
         }
     }
 
+    public static void removeLine(Context context, String fileName, int lineIndex){
+        List<List<String>> fileContents = getFullDataFromDir(context, fileName);
+
+        fileContents.remove(lineIndex);
+
+        for(List<String> row: fileContents){
+            for(String data: row){
+                writeCsvData(context, fileName, data);
+            }
+            writeNewLine(context, fileName);
+        }
+    }
+
     private static void writeAndCloseBufferedWriter(BufferedWriter csvWr, String data) throws IOException{
         csvWr.write(data);
         csvWr.flush();
