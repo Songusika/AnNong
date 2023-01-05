@@ -34,7 +34,7 @@
         </activity>
         <activity android:name=".activity.CropMetaSettingActivity"/>
         <activity android:name=".activity.TableSettingActivity"/>
-        <activity android:name=".activity.InputDataActivity"/>
+        <activity android:name=".activity.InputDataActivityTest"/>
         <activity android:name=".activity.CropSelectActivity"/>
     </application>
 

@@ -34,4 +34,13 @@ public class CropMeta {
                 .get()
                 .getDataType();
     }
+
+    @RequiresApi(api = VERSION_CODES.N)
+    public boolean getIsRequiredByColumn(String column){
+        return rows.stream()
+                .filter(row -> row.getColumnName().equals(column))
+                .findFirst()
+                .get()
+                .isRequired();
+    }
 }

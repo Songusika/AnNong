@@ -50,7 +50,7 @@ public class CropSelectActivity extends AppCompatActivity {
 
     private void initNextBtnEvent(){
         goNextBtn.setOnClickListener(view -> {
-            Intent inputDataActivity = new Intent(getApplicationContext(), InputDataActivity.class);
+            Intent inputDataActivity = new Intent(getApplicationContext(), InputDataActivityTest.class);
             inputDataActivity.putExtra(Extras.CROP_NAME_KEY.getKey(), selectCropsDropDown.getSelectedItem().toString());
             startActivity(inputDataActivity);
         });

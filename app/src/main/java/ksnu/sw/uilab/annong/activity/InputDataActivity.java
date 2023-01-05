@@ -1,88 +1,88 @@
 package ksnu.sw.uilab.annong.activity;
 
-import static java.lang.Thread.sleep;
-
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Build.VERSION_CODES;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.Engine;
-import android.speech.tts.TextToSpeech.OnInitListener;
 import android.speech.tts.UtteranceProgressListener;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.loader.content.AsyncTaskLoader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import ksnu.sw.uilab.annong.R;
 import ksnu.sw.uilab.annong.domain.CropMeta;
-import ksnu.sw.uilab.annong.domain.CropRowMeta;
+import ksnu.sw.uilab.annong.domain.CropRow;
+import ksnu.sw.uilab.annong.domain.CropTable;
 import ksnu.sw.uilab.annong.utils.JsonUtils;
-import ksnu.sw.uilab.annong.utils.enums.CustomDataType;
 import ksnu.sw.uilab.annong.utils.enums.Extras;
 
 public class InputDataActivity extends AppCompatActivity {
 
-    TextView time_progress;
+    TextView textView_crop_name, time_progress;
     ProgressBar progressBar;
     TableLayout tableLayout;
 
-    CropMeta cropMeta;
-    List<CropRowMeta> cropRowMetas;
-    TextToSpeech tts;
-    SpeechRecognizer mRecognizer;
-    Intent sttIntent;
-
-    String currentColumn = "키";
-    String currentDataType;
-    boolean currentIsRequired;
-
-    private final Activity activity = this;
-    Bundle params = new Bundle();
-
-    boolean testB = true;
-
     long baseTime, pauseTime, setTime;
 
-    @RequiresApi(api = VERSION_CODES.N)
+    private CropMeta cropMeta;
+    private CropTable cropTable;
+    private CropRow currentCropRow;
+
+    private TextToSpeech introduceCropDataTTS;
+    private TextToSpeech checkCropDataTTS;
+
+    private Intent speechToTextIntent;
+    private SpeechRecognizer recognizer;
+
+    private RecognitionListener receiveCropDataRecognitionListener;
+    private RecognitionListener receiveCheckRecognitionListener;
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_data);
 
-        time_progress = (TextView) findViewById(R.id.time_progress);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-        cropMeta = JsonUtils.getInstanceFromJson(this, getIntent().getExtras().getString(Extras.CROP_NAME_KEY.getKey()), CropMeta.class);
-        cropRowMetas = cropMeta.getRows();
-
-        if ( Build.VERSION.SDK_INT >= 23 ){
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO}, 1);
-        }
-        currentColumn = cropRowMetas.get(0).getColumnName();
+        initCropMetaData();
+        initCropTable();
         initTextToSpeech();
-        initSpeechToText();
-        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, null);
+        initSpeechToTextIntent();
+        initRecognitionListener();
+
+        /* 시작 다이얼로그 하나 */
+        Dialog dialog = new Dialog(InputDataActivity.this);
+        dialog.setContentView(R.layout.dialog_start);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        Button start_button = (Button) dialog.findViewById(R.id.start_button);
+        start_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+
+        textView_crop_name = (TextView) findViewById(R.id.textview_crop_name);
+        textView_crop_name.setText(cropMeta.getCropName());
+
+        time_progress = (TextView) findViewById(R.id.time_progress);
+//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         /* 중지버튼 -> 초기화 */
         time_progress.addTextChangedListener(new TextWatcher() {
             @Override
@@ -101,226 +101,201 @@ public class InputDataActivity extends AppCompatActivity {
             }
         });
 
-        Button btn = findViewById(R.id.btn_go);
+        /* 데이터가 들어오면 사용 */
+        tableLayout = (TableLayout) findViewById(R.id.table_layout);
 
-        btn.setOnClickListener(view -> {
-            startGetData();
-        });
-
-
-        /* 데이터 입력 시 add_table_data_row.xml 사용 */
-//        tableLayout = (TableLayout) findViewById(R.id.table_layout);
-//        @SuppressLint("ResourceType") TableRow tableRow = (TableRow) findViewById(R.layout.add_table_data_row);
-//        tableLayout.addView(tableRow);
     }
 
-    @RequiresApi(api = VERSION_CODES.N)
-    private void startGetData(){
-        if(!currentColumn.equals("키")){
-            activity.runOnUiThread(()->{
-                try{
-                    Toast.makeText(activity, "대기 중", Toast.LENGTH_SHORT).show();
-                    Thread.sleep(10000);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-            });
-        }
-        voiceOut(currentColumn+"를 입력해주세요");
+    private void initCropMetaData(){
+        cropMeta = JsonUtils.getInstanceFromJson(this, getIntent().getExtras().getString(Extras.CROP_NAME_KEY.getKey()), CropMeta.class);
     }
 
-    private void setCurrentRowMeta(CropRowMeta currentRowMeta){
-        currentColumn = currentRowMeta.getColumnName();
-        currentDataType = currentRowMeta.getDataType();
-        currentIsRequired = currentRowMeta.isRequired();
-    }
-
-    private void initSpeechToText(){
-        TextToSpeech.OnInitListener li = new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int state) {
-                if (state == TextToSpeech.SUCCESS) {
-                    Log.e("TTs", "tts success");
-                    tts.setLanguage(Locale.KOREAN);
-                    tts.setPitch(1);
-                    tts.speak("로딩 완료", TextToSpeech.QUEUE_FLUSH, null);
-                    tts.setOnUtteranceProgressListener(ttsUtteranceListener);
-                    return;
-                }
-                Log.e("TTS", "fail to init TTS");
-            }
-        };
-        this.tts = new TextToSpeech(this, li);
+    private void initCropTable(){
+        this.cropTable = new CropTable(this);
+        this.currentCropRow = new CropRow(cropMeta);
     }
 
     private void initTextToSpeech(){
-        sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        sttIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
-        sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
-
+        initIntroduceCropDataTTS();
+        initCheckCropDataTTS();
     }
 
-    private void speechStart(){
-        mRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        mRecognizer.setRecognitionListener(CropDataRecognitionListener);
-        mRecognizer.startListening(sttIntent);
+    private void settingTTSOnInit(TextToSpeech tts, UtteranceProgressListener ttsUtteranceListener){
+        tts.setLanguage(Locale.KOREAN);
+        tts.setPitch(1);
+        tts.setOnUtteranceProgressListener(ttsUtteranceListener);
     }
 
-    private void voiceOut(String msg){
-        tts.speak(msg, TextToSpeech.QUEUE_ADD, params, msg);
-    }
+    private void initIntroduceCropDataTTS(){
+        TextToSpeech.OnInitListener introduceCropDataTTSListener = state -> {
+            if (state == TextToSpeech.SUCCESS) {
+                settingTTSOnInit(introduceCropDataTTS, new UtteranceProgressListener() {
+                    @Override
+                    public void onStart(String s) {
 
-    private UtteranceProgressListener ttsUtteranceListener = new UtteranceProgressListener() {
-        @Override
-        public void onStart(String s) {
+                    }
 
-        }
+                    @Override
+                    public void onDone(String s) {
 
-        @Override
-        public void onDone(String s) {
-            activity.runOnUiThread(() -> speechStart());
-        }
+                    }
 
-        @Override
-        public void onError(String s) {
+                    @Override
+                    public void onError(String s) {
 
-        }
-    };
-
-    private RecognitionListener CropDataRecognitionListener = new RecognitionListener(){
-        @Override
-        public void onReadyForSpeech(Bundle bundle) {
-
-        }
-
-        @Override
-        public void onBeginningOfSpeech() {
-
-        }
-
-        @Override
-        public void onRmsChanged(float v) {
-
-        }
-
-        @Override
-        public void onBufferReceived(byte[] bytes) {
-
-        }
-
-        @Override
-        public void onEndOfSpeech() {
-
-        }
-
-        @Override
-        public void onError(int error) {
-            String message;
-
-            switch (error) {
-                case SpeechRecognizer.ERROR_AUDIO:
-                    message = "오디오 에러";
-                    break;
-                case SpeechRecognizer.ERROR_CLIENT:
-                    message = "클라이언트 에러";
-                    break;
-                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
-                    message = "퍼미션 없음";
-                    break;
-                case SpeechRecognizer.ERROR_NETWORK:
-                    message = "네트워크 에러";
-                    break;
-                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
-                    message = "네트웍 타임아웃";
-                    break;
-                case SpeechRecognizer.ERROR_NO_MATCH:
-                    message = "찾을 수 없음";
-                    break;
-                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
-                    message = "RECOGNIZER 가 바쁨";
-                    break;
-                case SpeechRecognizer.ERROR_SERVER:
-                    message = "서버가 이상함";
-                    break;
-                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
-                    message = "말하는 시간초과";
-                    break;
-                default:
-                    message = "알 수 없는 오류임";
-                    break;
-            }
-            tts.speak(message, TextToSpeech.QUEUE_FLUSH, null);
-        }
-
-        @RequiresApi(api = VERSION_CODES.N)
-        @Override
-        public void onResults(Bundle bundle) {
-            ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            //voiceOut(matches.get(0));
-            tts.speak(matches.get(0), TextToSpeech.QUEUE_FLUSH, null);
-            if(currentColumn.equals("몸무게")){
+                    }
+                });
                 return;
             }
-            currentColumn = "몸무게";
-            startGetData();
-        }
+            Log.e("TTS", "fail to init Introduce TTS");
+        };
+        this.introduceCropDataTTS = new TextToSpeech(this, introduceCropDataTTSListener);
+    }
 
-        @Override
-        public void onPartialResults(Bundle bundle) {
+    private void initCheckCropDataTTS(){
+        TextToSpeech.OnInitListener checkCropDataTTSListener = state -> {
+            if (state == TextToSpeech.SUCCESS) {
+                settingTTSOnInit(checkCropDataTTS, new UtteranceProgressListener() {
+                    @Override
+                    public void onStart(String s) {
 
-        }
+                    }
 
-        @Override
-        public void onEvent(int i, Bundle bundle) {
+                    @Override
+                    public void onDone(String s) {
 
-        }
-    };
+                    }
 
-    private RecognitionListener DataCheckRecognitionListener = new RecognitionListener(){
+                    @Override
+                    public void onError(String s) {
 
-        @Override
-        public void onReadyForSpeech(Bundle bundle) {
+                    }
+                });
+                return;
+            }
+            Log.e("TTS", "fail to init check TTS");
+        };
+        this.checkCropDataTTS = new TextToSpeech(this, checkCropDataTTSListener);
+    }
 
-        }
+    private void initSpeechToTextIntent(){
+        speechToTextIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechToTextIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
+        speechToTextIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR");
+    }
 
-        @Override
-        public void onBeginningOfSpeech() {
+    private void getCropDataFromSpeech(){
+        recognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        recognizer.setRecognitionListener(this.receiveCropDataRecognitionListener);
+        recognizer.startListening(speechToTextIntent);
+    }
 
-        }
+    private void getCheckFromSpeech(){
+        recognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        recognizer.setRecognitionListener(this.receiveCheckRecognitionListener);
+        recognizer.startListening(speechToTextIntent);
+    }
 
-        @Override
-        public void onRmsChanged(float v) {
+    private void initRecognitionListener(){
+        initCropDataRecognitionListener();
+        initCheckRecognitionListener();
+    }
 
-        }
+    private void initCropDataRecognitionListener(){
+        this.receiveCropDataRecognitionListener = new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
 
-        @Override
-        public void onBufferReceived(byte[] bytes) {
+            }
 
-        }
+            @Override
+            public void onBeginningOfSpeech() {
 
-        @Override
-        public void onEndOfSpeech() {
+            }
 
-        }
+            @Override
+            public void onRmsChanged(float v) {
 
-        @Override
-        public void onError(int i) {
+            }
 
-        }
+            @Override
+            public void onBufferReceived(byte[] bytes) {
 
-        @Override
-        public void onResults(Bundle bundle) {
+            }
 
-        }
+            @Override
+            public void onEndOfSpeech() {
 
-        @Override
-        public void onPartialResults(Bundle bundle) {
+            }
 
-        }
+            @Override
+            public void onError(int i) {
 
-        @Override
-        public void onEvent(int i, Bundle bundle) {
+            }
 
-        }
-    };
+            @Override
+            public void onResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        };
+    }
+
+    private void initCheckRecognitionListener(){
+        this.receiveCheckRecognitionListener = new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+
+            }
+
+            @Override
+            public void onRmsChanged(float v) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] bytes) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        };
+    }
 }

@@ -8,6 +8,7 @@ import ksnu.sw.uilab.annong.utils.CsvUtils;
 import ksnu.sw.uilab.annong.utils.enums.BasicCropColumn;
 import ksnu.sw.uilab.annong.utils.enums.CustomDataType;
 import ksnu.sw.uilab.annong.utils.validator.exception.NotCorrectDataTypeException;
+import ksnu.sw.uilab.annong.utils.validator.exception.NotNullDataTypeException;
 
 public class CropRow {
 
@@ -39,8 +40,10 @@ public class CropRow {
     }
 
     @RequiresApi(api = VERSION_CODES.N)
-    public void fillColumnData(String column, String data) throws NotCorrectDataTypeException {
-        row.replace(column,CustomDataType.getCustomDataType(cropMeta.getDataTypeByColumn(column)).validate(data));
+    public void fillColumnData(String column, String data) throws NotCorrectDataTypeException, NotNullDataTypeException {
+        String dataType = cropMeta.getDataTypeByColumn(column);
+        boolean isRequired = cropMeta.getIsRequiredByColumn(column);
+        row.replace(column,CustomDataType.getCustomDataType(dataType).validate(data, isRequired));
     }
 
     @RequiresApi(api = VERSION_CODES.N)

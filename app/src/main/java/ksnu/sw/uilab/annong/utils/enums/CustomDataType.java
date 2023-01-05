@@ -6,22 +6,23 @@ import androidx.annotation.RequiresApi;
 import java.util.Arrays;
 import ksnu.sw.uilab.annong.utils.validator.DataTypeValidator;
 import ksnu.sw.uilab.annong.utils.validator.exception.NotCorrectDataTypeException;
+import ksnu.sw.uilab.annong.utils.validator.exception.NotNullDataTypeException;
 
 @FunctionalInterface
 interface validateFunction<T>{
-    T apply(T t) throws NotCorrectDataTypeException;
+    T apply(T t, boolean t2) throws NotCorrectDataTypeException, NotNullDataTypeException;
 }
 
 @RequiresApi(api = VERSION_CODES.N)
 public enum CustomDataType {
-    NUMBER(0, "숫자", (data)->{
-        Log.e("Validator", DataTypeValidator.validateNumberTypeData(data));
+    NUMBER(0, "숫자", (data, isRequired)->{
+        data = DataTypeValidator.validateNotNullTypeData(data, isRequired);
         return DataTypeValidator.validateNumberTypeData(data);
     }),
     /*
     * 추후 텍스트 타입의 데이터에 대해서 검증 조건이 추가될 경우 람다식으로 메서드 작성
     * */
-    STRING(1, "텍스트", (data)-> data);
+    STRING(1, "텍스트", (data, isRequired)-> DataTypeValidator.validateNotNullTypeData(data, isRequired));
 
     private final int index;
     private final String dataType;
@@ -54,7 +55,7 @@ public enum CustomDataType {
     }
 
     @RequiresApi(api = VERSION_CODES.N)
-    public String validate(String data) throws NotCorrectDataTypeException{
-        return validateExpression.apply(data);
+    public String validate(String data, boolean isRequired) throws NotCorrectDataTypeException, NotNullDataTypeException{
+        return validateExpression.apply(data, isRequired);
     }
 }

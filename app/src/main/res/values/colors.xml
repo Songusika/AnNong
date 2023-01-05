@@ -7,4 +7,31 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <!-- AnNong_seonmi Logo Color -->
+    <color name="pink_light"> #F299A9</color>
+    <color name="pink_deep">#E75760</color>
+    <color name="green_light">#6C8C3B</color>
+    <color name="green_deep">#677310</color>
+    <color name="white_melange">#F2F2F2</color>
+    <color name="yellow_soft">#F2B263</color>
+    <color name="dahong_soft1">#F9AA91</color>
+    <color name="dahong_soft2">#F9835A</color>
+
+
+    <!-- AnNong_seonmi Color Palette -->
+    <color name="spindle">#B6D0ED</color>
+    <color name="energy_yellow">#F5E05B</color>
+    <color name="main_shart">#2B2B2B</color>
+    <color name="lilac">#C6A3C5</color>
+    <color name="bay_leaf">#75AE87</color>
+
+    <!-- AnNong_seonmi Color Palette2 -->
+    <color name="color1">#FFC09E</color>
+    <color name="color2">#ED7D79</color>
+    <color name="color3">#59A59F</color>
+    <color name="color4">#92BE96</color>
+    <color name="color5">#BFC78B</color>
+
 </resources>
