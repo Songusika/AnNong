@@ -23,7 +23,7 @@
             android:paddingHorizontal="50dp">
 
         <Button
-                android:id="@+id/btn_table_setting"
+                android:id="@+id/own_btn_table_setting"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

@@ -16,7 +16,9 @@ interface validateFunction<T>{
 @RequiresApi(api = VERSION_CODES.N)
 public enum CustomDataType {
     NUMBER(0, "숫자", (data, isRequired)->{
-        data = DataTypeValidator.validateNotNullTypeData(data, isRequired);
+        if(DataTypeValidator.validateNotNullTypeData(data, isRequired).equals(" ")){
+            return " ";
+        }
         return DataTypeValidator.validateNumberTypeData(data);
     }),
     /*

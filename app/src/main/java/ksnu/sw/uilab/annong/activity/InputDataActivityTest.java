@@ -60,7 +60,7 @@ public class InputDataActivityTest extends AppCompatActivity {
         setContentView(R.layout.activity_input_data);
 
         time_progress = (TextView) findViewById(R.id.time_progress);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         cropMeta = JsonUtils.getInstanceFromJson(this, getIntent().getExtras().getString(Extras.CROP_NAME_KEY.getKey()), CropMeta.class);
         cropRowMetas = cropMeta.getRows();
@@ -90,11 +90,11 @@ public class InputDataActivityTest extends AppCompatActivity {
             }
         });
 
-        Button btn = findViewById(R.id.btn_go);
+        //Button btn = findViewById(R.id.btn_go);
 
-        btn.setOnClickListener(view -> {
-            startGetData();
-        });
+       // btn.setOnClickListener(view -> {
+         //   startGetData();
+       // });
 
 
         /* 데이터 입력 시 add_table_data_row.xml 사용 */

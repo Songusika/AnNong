@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white_melange">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="작물 선택"
+            android:textSize="50dp"
+            android:textStyle="bold"
+            android:textAlignment="center"/>
+
+        <ListView
+            android:id="@+id/listView_crop_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:listSelector="@color/pink_light"/>
+
+        <Button
+            android:id="@+id/btn_add_new_crop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_button"
+            android:text="새로운 작물 추가"
+            android:textSize="30dp"/>
+    </LinearLayout>
+
+
+</LinearLayout>

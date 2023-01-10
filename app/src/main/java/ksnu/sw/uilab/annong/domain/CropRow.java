@@ -41,9 +41,14 @@ public class CropRow {
 
     @RequiresApi(api = VERSION_CODES.N)
     public void fillColumnData(String column, String data) throws NotCorrectDataTypeException, NotNullDataTypeException {
+        row.replace(column,validate(column, data));
+    }
+
+    @RequiresApi(api = VERSION_CODES.N)
+    public String validate(String column, String data) throws NotCorrectDataTypeException, NotNullDataTypeException{
         String dataType = cropMeta.getDataTypeByColumn(column);
         boolean isRequired = cropMeta.getIsRequiredByColumn(column);
-        row.replace(column,CustomDataType.getCustomDataType(dataType).validate(data, isRequired));
+        return CustomDataType.getCustomDataType(dataType).validate(data, isRequired);
     }
 
     @RequiresApi(api = VERSION_CODES.N)

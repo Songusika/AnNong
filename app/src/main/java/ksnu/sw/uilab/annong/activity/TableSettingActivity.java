@@ -1,11 +1,15 @@
 package ksnu.sw.uilab.annong.activity;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -30,52 +34,102 @@ import ksnu.sw.uilab.annong.utils.enums.Extras;
 
 public class TableSettingActivity extends AppCompatActivity {
 
-    CropMeta cropMetaData;
-    TextView cropsName;
-    TableLayout tableLayout;
-    Button btnAddRow, btnDeleteRow, btnSaveTable;
+    TextView textView_crop_name;
+    TableLayout setting_table_layout;
+    Button btn_add_row, btn_delete_row, btn_save_table;
 
-    @RequiresApi(api = VERSION_CODES.N)
+    CropMeta cropMetaData;
+    String crop_name;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_table_setting);
 
-        initComponents();
-        initEvent();
-        initCropMetaData(getIntent().getExtras().getString(Extras.CROP_NAME_KEY.getKey()));
+        Intent intent = getIntent();
+        crop_name = intent.getStringExtra("crop_name");
+
+        textView_crop_name = (TextView) findViewById(R.id.textView_crop_name);
+        textView_crop_name.setText(crop_name);
+
+        setting_table_layout = (TableLayout) findViewById(R.id.setting_table_layout);
+
+        initCropMetaData(intent.getExtras().getString(Extras.CROP_NAME_KEY.getKey()));
+
+
+        /* 테이블 로우 추가 */
+        btn_add_row = (Button) findViewById(R.id.btn_add_row);
+        btn_add_row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add_tableRow();
+            }
+        });
+
+        /* 테이블 로우 삭제 */
+        btn_delete_row = (Button) findViewById(R.id.btn_delete_row);
+        btn_delete_row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                delete_tableRow();
+            }
+        });
+
+        /* 테이블 저장 */
+        btn_save_table = (Button) findViewById(R.id.btn_save_table);
+        btn_save_table.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Dialog dialog = new Dialog(TableSettingActivity.this);
+                dialog.setContentView(R.layout.dialog_view);
+
+                TextView dialog_title = (TextView) dialog.findViewById(R.id.dialog_title);
+                TextView dialog_msg = (TextView) dialog.findViewById(R.id.dialog_msg);
+                EditText dialog_text = (EditText) dialog.findViewById(R.id.dialog_text);
+                Button dialog_btn_no = (Button) dialog.findViewById(R.id.dialog_btn_no);
+                Button dialog_btn_ok = (Button) dialog.findViewById(R.id.dialog_btn_ok);
+
+                dialog_title.setText("저장");
+                dialog_msg.setText("메세지 입력 알아서 하기");
+                dialog_text.setVisibility(View.GONE);
+                dialog_btn_no.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog_btn_ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        saveTable();
+                        makeTableHeader();
+                        finish();
+                    }
+                });
+
+                dialog.show();
+            }
+        });
     }
 
-    private void initComponents(){
-        cropsName = findViewById(R.id.crops_name);
-        tableLayout = findViewById(R.id.table_layout);
-        btnAddRow = findViewById(R.id.btn_add_row);
-        btnDeleteRow = findViewById(R.id.btn_delete_row);
-        btnSaveTable = findViewById(R.id.btn_save_table);
-    }
-
-    private void initEvent(){
-        initBtnAddEvent();
-        initBtnDeleteEvent();
-        initBtnSaveTable();
-    }
-
-    @RequiresApi(api = VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initCropMetaData(String cropName){
         cropMetaData = getCropMetaData(cropName);
-        cropsName.setText(cropMetaData.getCropName());
+        textView_crop_name.setText(cropMetaData.getCropName());
         initCropRowMetaData(cropMetaData.getRows());
     }
 
-    @RequiresApi(api = VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initCropRowMetaData(List<CropRowMeta> cropRowMetaData){
         for(CropRowMeta rowMeta: cropRowMetaData){
-            TableRow tableRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.table_setting_add_row, null);
+            TableRow tableRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.add_table_setting_row, null);
             ((EditText) tableRow.getVirtualChildAt(1)).setText(rowMeta.getColumnName());
             ((Spinner) tableRow.getVirtualChildAt(2)).setSelection(rowMeta.getDataTypeIndex());
             ((CheckBox) tableRow.getVirtualChildAt(3)).setChecked(rowMeta.isRequired());
-            tableLayout.addView(tableRow);
+            setting_table_layout.addView(tableRow);
         }
+
     }
 
     /**
@@ -84,63 +138,6 @@ public class TableSettingActivity extends AppCompatActivity {
      */
     private CropMeta getCropMetaData(String cropName){
         return JsonUtils.getInstanceFromJson(this, cropName, CropMeta.class);
-    }
-
-    private void initBtnAddEvent(){
-        btnAddRow.setOnClickListener(view -> addTableRow());
-    }
-
-    private void initBtnDeleteEvent(){
-        btnDeleteRow.setOnClickListener(view -> deleteTableRow());
-    }
-
-    private void initBtnSaveTable(){
-        btnSaveTable.setOnClickListener(view -> {
-            saveTable();
-            makeTableHeader();
-        });
-    }
-
-    /* 테이블 행 추가2 */
-    private void addTableRow() {
-        TableRow tableRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.table_setting_add_row, null);
-        Log.d("", ""+tableRow.getVirtualChildCount());
-        tableLayout.addView(tableRow);
-    }
-
-    /* 테이블 행 삭제 */
-    private void deleteTableRow() {
-        ArrayList<Integer> delete_list = new ArrayList<>();
-
-        for(int i = 0; i< tableLayout.getChildCount(); i++) {
-            TableRow tableRow = (TableRow) tableLayout.getChildAt(i);
-            CheckBox checkBox = (CheckBox) tableRow.getChildAt(0);
-            if(checkBox.isChecked()) {
-                delete_list.add(i);
-                Log.e("TAG", i+"행 추가");
-            }
-        }
-
-        int count = 0;
-        for(int i=0; i<delete_list.size(); i++) {
-            Log.e("TAG", delete_list.get(i) +"번째 행 삭제");
-            tableLayout.removeViewAt(delete_list.get(i)-count);
-            count++;
-        }
-        delete_list.clear();
-    }
-
-    private void saveTable(){
-        List<CropRowMeta> cropRowMeta = new ArrayList<>();
-        CropMeta cropMeta = new CropMeta(getCropName());
-
-        for(int index =0; index<tableLayout.getChildCount(); index++){
-            TableRow currentRow = (TableRow) tableLayout.getChildAt(index);
-            cropRowMeta.add(makeNewCropRowMeta(currentRow));
-        }
-        cropMeta.setRows(cropRowMeta);
-        this.cropMetaData = cropMeta;
-        JsonUtils.writeJsonData(this, getCropName(), cropMeta);
     }
 
     private void makeTableHeader(){
@@ -152,8 +149,35 @@ public class TableSettingActivity extends AppCompatActivity {
         CsvUtils.writeNewLine(this, this.cropMetaData.getCropName());
     }
 
-    private void appendTableHeader(String data){
+    private void appendTableHeader(String data) {
         CsvUtils.writeCsvData(this, this.cropMetaData.getCropName(), data);
+    }
+
+    /* 테이블 행 추가 */
+    void add_tableRow() {
+        TableRow tableRow = (TableRow) LayoutInflater.from(this).inflate(R.layout.add_table_setting_row, null);
+        setting_table_layout.addView(tableRow);
+    }
+
+    /* 테이블 행 삭제 */
+    void delete_tableRow() {
+        ArrayList<Integer> delete_list = new ArrayList<>();
+
+        for(int i=0; i<setting_table_layout.getChildCount(); i++) {
+            TableRow tableRow = (TableRow) setting_table_layout.getChildAt(i);
+            CheckBox checkBox = (CheckBox) tableRow.getChildAt(0);
+            if(checkBox.isChecked()) {
+                delete_list.add(i);
+            }
+        }
+
+        int count = 0;
+        for(int i=0; i<delete_list.size(); i++) {
+            setting_table_layout.removeViewAt(delete_list.get(i)-count);
+            count++;
+        }
+
+        delete_list.clear();
     }
 
     private CropRowMeta makeNewCropRowMeta(TableRow row){
@@ -162,6 +186,19 @@ public class TableSettingActivity extends AppCompatActivity {
         boolean isRequired = getRequireOption(row);
 
         return new CropRowMeta(columnName, dataType, isRequired);
+    }
+
+    private void saveTable(){
+        List<CropRowMeta> cropRowMeta = new ArrayList<>();
+        CropMeta cropMeta = new CropMeta(getCropName());
+
+        for(int index =0; index<setting_table_layout.getChildCount(); index++){
+            TableRow currentRow = (TableRow) setting_table_layout.getChildAt(index);
+            cropRowMeta.add(makeNewCropRowMeta(currentRow));
+        }
+        cropMeta.setRows(cropRowMeta);
+        this.cropMetaData = cropMeta;
+        JsonUtils.writeJsonData(this, getCropName(), cropMeta);
     }
 
     private String getColumnName(TableRow row){
@@ -177,6 +214,6 @@ public class TableSettingActivity extends AppCompatActivity {
     }
 
     private String getCropName(){
-        return this.cropsName.getText().toString();
+        return crop_name;
     }
 }

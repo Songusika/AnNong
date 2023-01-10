@@ -3,8 +3,8 @@ package ksnu.sw.uilab.annong.utils.enums;
 public enum CustomUserAnswer {
     RETRY("다시"),
     NONE("없음"),
-    STOP("중지"),
-    SAVE("저장");
+    SAVE("네"),
+    NO("아니요");
 
     private final String answer;
 

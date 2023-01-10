@@ -2,16 +2,19 @@ package ksnu.sw.uilab.annong.utils;
 
 import android.content.Context;
 
+import android.os.Environment;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import ksnu.sw.uilab.annong.utils.enums.AppResourceName;
 
 public class FileUtils {
 
@@ -68,5 +71,44 @@ public class FileUtils {
         BufferedWriter br = new BufferedWriter(os);
 
         return br;
+    }
+
+    public static void moveFileToDocument(Context context, String inputFile){
+        InputStream in = null;
+        OutputStream out = null;
+
+        try{
+            String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            in = context.openFileInput(inputFile);
+            out = new FileOutputStream(dirPath+"/Download/"+inputFile);
+
+            InputStreamReader inReader = new InputStreamReader(in, "MS949");
+            OutputStreamWriter outWriter = new OutputStreamWriter(out, "MS949");
+
+            BufferedReader bufferedReader = new BufferedReader(inReader);
+            BufferedWriter bufferedWriter = new BufferedWriter(outWriter);
+
+            while(true){
+                String line = bufferedReader.readLine();
+                if(line == null){
+                    break;
+                }
+                bufferedWriter.write(line);
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+
+            inReader.close();
+            outWriter.close();
+
+            inReader.close();
+            outWriter.close();
+
+            in.close();
+            out.close();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }
