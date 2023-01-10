@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "354484458354",
+    "project_id": "annong-58074",
+    "storage_bucket": "annong-58074.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354484458354:android:040ecde02a7102122343eb",
+        "android_client_info": {
+          "package_name": "ksnu.sw.uilab.annong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "354484458354-fd41v4kt4jqjj4vmr2u34ps49i8va5p4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfJTjiS0lGsp9f-MCAGLJf243P0tgk7DA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "354484458354-fd41v4kt4jqjj4vmr2u34ps49i8va5p4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
